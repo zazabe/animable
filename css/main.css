@@ -1,0 +1,14 @@
+body {
+    background: #f6f6f6;
+}
+
+#scene {
+    background: #fff;
+    border: 1px solid #999;
+    width: 2400px;
+    height: 800px;
+    overflow: hidden;
+    position: absolute;
+}
+
+#scene.wireframe div { opacity:0.5; border: 1px solid #999; }
