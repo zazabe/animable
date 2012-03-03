@@ -1,6 +1,4 @@
-define(["jquery", "animable/core", "util/config.class"], function($, Animable) {
-    
-
+define(["jquery", "util/config.class"], function($) {
     Animable = $.extend({
         config: new Animable.Configuration({
             obj: {
@@ -17,14 +15,15 @@ define(["jquery", "animable/core", "util/config.class"], function($, Animable) {
                     },
                     anim: {
                         move: {
-                            wheel: [{ transform: '+=rotate(360deg)' }, 500, 'linear'],
+                            backWheel: [[{ transform: '+=rotate(360deg)' }, 500, 'linear']],
+                            frontWheel: [[{ transform: '+=rotate(360deg)' }, 500, 'linear']],
                             body:  [
                                 [{ transform: 'translate(2px,0px)' }, 250 , 'linear'],
                                 [{ transform: 'translate(0px,2px)' }, 250 , 'linear']
                             ]    
                         },
                         stop: {
-                            body:  [{ transform: ''}, 250]    
+                            body:  [[{ transform: ''}, 250]]    
                         }
                     }
                 },
@@ -38,10 +37,10 @@ define(["jquery", "animable/core", "util/config.class"], function($, Animable) {
                     },
                     anim: {
                         open: {
-                            door:  [{ transform: ''}, 250] 
+                            door:  [[{ transform: ''}, 250]] 
                         },
                         close: {
-                            door:  [{ transform: ''}, 250]    
+                            door:  [[{ transform: ''}, 250]]    
                         }
                     }
                 }
@@ -61,13 +60,11 @@ define(["jquery", "animable/core", "util/config.class"], function($, Animable) {
                         }   
                     },
                     anim: {
-                        play:     [{ transform: '+=translate(10%,0px)'}, 250, 'linear'],
+                        play:     [[{ transform: '+=translate(10%,0px)'}, 250, 'linear']],
                         iteration: 8
                     }
                 }    
             }
         })
     }, Animable);
-        
-    return Animable;
 });

@@ -1,4 +1,4 @@
-define(["animable/core"], function(Animable) {
+define([], function() {
 
     Animable.Convert = {
         Expressions: {
@@ -25,6 +25,4 @@ define(["animable/core"], function(Animable) {
             };
         }   
     };
-
-    return Animable;
 });

@@ -1,4 +1,4 @@
-define(["animable/core"], function(Animable) {
+define([], function() {
     Animable.Configuration = function(config){
         this.config = config;
     };
@@ -33,6 +33,4 @@ define(["animable/core"], function(Animable) {
             return found;
         }
     };
-    
-    return Animable;
 });

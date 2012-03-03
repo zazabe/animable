@@ -1,4 +1,4 @@
-define(["jquery", "animable/config", "animable/anim.class", "util/convert.class"], function($, Animable) {
+define(["jquery", "animable/config", "animable/anim.class", "util/convert.class"], function($) {
 
     Animable.Obj = function(type, style){
         this.type = type;
@@ -46,10 +46,9 @@ define(["jquery", "animable/config", "animable/anim.class", "util/convert.class"
         },
         
         createElements: function(){
-            this.struct = this.createStructure();
-            
-            this.elements = {};
             var definitions = this.config.find('struct').getRaw();
+            this.struct = this.createStructure();
+            this.elements = {};
             
             for(var element in definitions)
             {
@@ -61,32 +60,35 @@ define(["jquery", "animable/config", "animable/anim.class", "util/convert.class"
         createElement: function(name, def){
             var element = $('<div>').attr('id', name);
             element.css(this.getCssFromDefinition(def));
+            
             return element;
         },
         
         getElement: function(name){
-            return this.elements[name] ? this.elements[name] : null;
+            if(!this.elements[name]){
+                throw {message: 'element ' + name + ' doesn\'t exist' };
+            }
+            return this.elements[name];
         },
         
         setupAnimations: function(){
-            var anims = this.config.find('anim');
-            var elements = this.elements;
-            
-            this.animations = {};
-            
+            var anims = this.config.find('anim').getRaw(),
+                elements = this.elements,
+                calls = {};
+                
             for(var method in anims){
+                calls[method] = [];
                 var def = anims[method];
-                var calls = [];
-                for(var element in def){
-                    this.animations[element] = new Animable.Animations(def[element]);
-                    calls.push(this.animations[element]);
+                for(var name in def){
+                    calls[method].push(new Animable.Animations(this.getElement(name), def[name]));
                 }
-                this[method] = function(){
-                    for(var i=0 ; i < calls.length ; i++){
-                        calls[i].run();
-                    }
-                };
-                 
+                this[method] = function(animObjects){
+                    return function() {
+                        for(var i=0 ; i < animObjects.length ; i++){ 
+                            animObjects[i].run();
+                        }
+                    };
+                }(calls[method]);
             }
         },
         
@@ -108,9 +110,7 @@ define(["jquery", "animable/config", "animable/anim.class", "util/convert.class"
                     'left': position['x'] + 'px',
                 }
             }
-            return $.extend({'position': 'absolute'}, position, area);
+            return $.extend({'position': 'absolute', transform: 'translate(0px,0px)'}, position, area);
         }
     };
-
-    return Animable;
 });

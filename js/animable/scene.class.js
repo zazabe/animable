@@ -1,5 +1,7 @@
-define(["jquery", "animable/obj.class", "animable/anim.class", "animable/config"], function($, Animable) {
+define(["jquery", "animable/obj.class", "animable/anim.class", "animable/config"], function($) {
 
+    console.log(Animable);
+    
     Animable.Scene = function(container, scene, params){
         this.configure();
         this.setScene(container, scene);
@@ -74,6 +76,4 @@ define(["jquery", "animable/obj.class", "animable/anim.class", "animable/config"
       });  
       return instance;
     };
-
-    return Animable;
 });

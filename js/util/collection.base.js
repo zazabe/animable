@@ -1,4 +1,4 @@
-define(["animable/core", "util/util.class"], function(Animable) {
+define(["util/util.class"], function() {
  
     Animable.Base = Animable.Base || {};
     
@@ -145,6 +145,4 @@ define(["animable/core", "util/util.class"], function(Animable) {
             }
         }
     };
-   
-    return Animable;
 });

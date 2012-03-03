@@ -1,5 +1,3 @@
-require(["jquery"], function(jQuery) {
-
     /*
      * transform: A jQuery cssHooks adding cross-browser 2d transform capabilities to $.fn.css() and $.fn.animate()
      *
@@ -557,6 +555,3 @@ require(["jquery"], function(jQuery) {
     };
     
     })( jQuery, window, document, Math );
-
-    
-});

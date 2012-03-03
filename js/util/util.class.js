@@ -1,4 +1,4 @@
-define(["animable/core"], function(Animable) {
+define([], function() {
     
     Animable.Util = {
         isArray: function(obj){
