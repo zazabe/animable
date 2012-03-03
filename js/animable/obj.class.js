@@ -1,4 +1,4 @@
-define(["jquery", "animable/config", "animable/anim.class", "util/convert.class"], function($) {
+define(["jquery", "animable/config", "animable/observer.class", "animable/anim.class", "util/convert.class"], function($) {
 
     Animable.Obj = function(type, style){
         this.type = type;
@@ -17,7 +17,7 @@ define(["jquery", "animable/config", "animable/anim.class", "util/convert.class"
                 this.config = Animable.config.find(this.type, true);
             }
             else {
-                throw {message: 'Animable has no configuration'};
+                throw new Error('Animable has no configuration');
             }
         },
         
@@ -34,15 +34,11 @@ define(["jquery", "animable/config", "animable/anim.class", "util/convert.class"
         },
         
         position: function(position){
-            var position = Animable.Convert.Position(position);
-            this.struct.css({
-                'top': position['y'] + 'px',
-                'left': position['x'] + 'px'
-            });
+            this.struct.css(Animable.Convert.Position(position));
         },
         
         createStructure: function(){
-            return $('<div>').addClass(this.type).css({'position': 'relative'});
+            return $('<div>').addClass(this.type).css({'position': 'absolute', transform: 'translate(0px,0px)'});
         },
         
         createElements: function(){
@@ -65,8 +61,8 @@ define(["jquery", "animable/config", "animable/anim.class", "util/convert.class"
         },
         
         getElement: function(name){
-            if(!this.elements[name]){
-                throw {message: 'element ' + name + ' doesn\'t exist' };
+            if(!this.elements.hasOwnProperty(name)){
+                throw new Error('element ' + name + ' doesn\'t exist');
             }
             return this.elements[name];
         },
@@ -82,33 +78,43 @@ define(["jquery", "animable/config", "animable/anim.class", "util/convert.class"
                 for(var name in def){
                     calls[method].push(new Animable.Animations(this.getElement(name), def[name]));
                 }
-                this[method] = function(animObjects){
+                this[method] = function(animObjects, method){
                     return function() {
                         for(var i=0 ; i < animObjects.length ; i++){ 
-                            animObjects[i].run();
+                            animObjects[i].run(method);
                         }
                     };
-                }(calls[method]);
+                }(calls[method], method);
             }
+        },
+        
+        getHeight: function(){
+            var h = 0, height = 0;
+            for(var name in this.elements){
+                var el = this.elements[name];
+                h = el.position().top + el.height();
+                height = (h > height) ? h : height;
+            }
+            return height;
+        },
+        
+        getWidth: function(){
+            var w = 0, width = 0;
+            for(var name in this.elements){
+                var el = this.elements[name];
+                w = el.position().left + el.width();
+                width = (w > width) ? w : width;
+            }
+            return width;
         },
         
         getCssFromDefinition: function(def){
             var area = {}, position = {};
             if(def.area){
                 area = Animable.Convert.Area(def.area);
-                area = {
-                    'width': area['w'] + 'px',
-                    'height': area['h'] + 'px',
-                    'backgroundPosition': area['x'] + 'px ' + area['y'] + 'px',
-                    'zIndex': area['z']
-                };
             }
             if(def.position){
                 position = Animable.Convert.Position(def.position);
-                position = {
-                    'top': position['y'] + 'px',
-                    'left': position['x'] + 'px',
-                }
             }
             return $.extend({'position': 'absolute', transform: 'translate(0px,0px)'}, position, area);
         }

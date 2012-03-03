@@ -2,13 +2,13 @@ body {
     background: #f6f6f6;
 }
 
-#scene {
+#container {
     background: #fff;
     border: 1px solid #999;
-    width: 2400px;
+    width: 1600px;
     height: 800px;
     overflow: hidden;
-    position: absolute;
+    position: relative;
 }
 
-#scene.wireframe div { opacity:0.5; border: 1px solid #999; }
+#container.wireframe div { opacity:0.5; border: 1px solid #999; }

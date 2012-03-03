@@ -9,9 +9,9 @@ define(["jquery", "util/config.class"], function($) {
                     },
                     struct: {
                         body:       { area: 'w592h232x0y-818z3' },
-                        backWheel:  { area: 'w93h93x-596y-958z2', position: 'x165y75' },
-                        frontWheel: { area: 'w93h93x-596y-958z2', position: 'x165y406' },
-                        back:       { area: 'w592h72x0y-746z1', position: 'x154y28' }        
+                        backWheel:  { area: 'w93h93x-596y-958z2', position: 'x75y165' },
+                        frontWheel: { area: 'w93h93x-596y-958z2', position: 'x406y165' },
+                        back:       { area: 'w592h72x0y-746z1', position: 'x28y154' }        
                     },
                     anim: {
                         move: {
@@ -29,18 +29,18 @@ define(["jquery", "util/config.class"], function($) {
                 },
                 building: {
                     style: {
-                        tower: { src: 'data/tower.svg' }   
+                        tower: { src: 'data/building/tower.svg' }   
                     },
                     struct: {
-                        door:  { area: '' },
-                        body:  { area: '' }
+                        body:  { area: 'w340h416x-18y-26z1' },
+                        door:  { area: 'w48h93x-366y-26z2', position: 'x78y276' }
                     },
                     anim: {
-                        open: {
-                            door:  [[{ transform: ''}, 250]] 
+                        open: { 
+                            door:  [[{ transformOrigin: '100% 50%', transform: 'scaleX(0.6) skewY(-8deg)'}, 750]] 
                         },
                         close: {
-                            door:  [[{ transform: ''}, 250]]    
+                            door:  [[{ transformOrigin: '100% 50%', transform: 'scaleX(1) skewY(0deg)'}, 500]]    
                         }
                     }
                 }
@@ -49,18 +49,20 @@ define(["jquery", "util/config.class"], function($) {
                 goTo: {
                     obj: {
                         subject:  { 
-                            position: 'x0y90%', 
+                            position: 'x0%y90%', 
                             allowed:  ['vehicule', 'human'], 
                             trigger:  { animPlayIterate: 'move', animPlayEnd: 'stop' } 
                         },
                         target: { 
-                            position: 'x90%y90%', 
+                            position: 'x78%y90%', 
                             allowed:  ['building'], 
                             trigger:  { animPlayEnd: 'open' } 
                         }   
                     },
                     anim: {
-                        play:     [[{ transform: '+=translate(10%,0px)'}, 250, 'linear']],
+                        play:     {
+                           subject: [[{ transform: '+=translate(5%,0%)'}, 500, 'linear']]
+                        },
                         iteration: 8
                     }
                 }    

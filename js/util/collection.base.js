@@ -5,7 +5,7 @@ define(["util/util.class"], function() {
     Animable.Base.Collection = {
         init: function(items){
             if(!this.validItems(items)){
-                throw { message: 'Collection: items is not an Array' };
+                throw new Error('Collection: items is not an Array');
             }
             this.index = 0;  
             this.items = items;
