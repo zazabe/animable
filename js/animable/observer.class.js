@@ -23,6 +23,18 @@ define([], function() {
         
         dispatchMethod: function(method, type){
             this.dispatch('anim' + Animable.Util.firstLetterUppercase(method) + Animable.Util.firstLetterUppercase(type));
+        },
+        
+        reset: function(){
+            for(var name in this.triggers){
+                this.unregister(name);
+            }
+        },
+        
+        unregister: function(name){
+            if(this.triggers.hasOwnProperty(name)){
+                delete this.triggers[name];
+            }
         }
     };
 });

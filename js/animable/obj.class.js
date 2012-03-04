@@ -2,7 +2,12 @@ define(["jquery", "animable/config", "animable/observer.class", "animable/anim.c
 
     Animable.Obj = function(type, style){
         this.type = type;
-       
+        this.style = style;
+        this.struct = null;
+        this.elements = {};
+        this.animations = {};
+        
+        
         this.configure(); 
         
         this.createElements();
@@ -22,9 +27,11 @@ define(["jquery", "animable/config", "animable/observer.class", "animable/anim.c
         },
         
         setStyle: function(style){
+            this.style = style ?  style : this.style; 
+            
             for(var name in this.elements){
                 this.elements[name].css({
-                    'backgroundImage': 'url(' + this.config.find(style, true).getRaw().src + ')'   
+                    'backgroundImage': 'url(' + this.config.find(this.style, true).getRaw().src + ')'   
                 });
             }
         },
@@ -44,7 +51,6 @@ define(["jquery", "animable/config", "animable/observer.class", "animable/anim.c
         createElements: function(){
             var definitions = this.config.find('struct').getRaw();
             this.struct = this.createStructure();
-            this.elements = {};
             
             for(var element in definitions)
             {
@@ -76,7 +82,8 @@ define(["jquery", "animable/config", "animable/observer.class", "animable/anim.c
                 calls[method] = [];
                 var def = anims[method];
                 for(var name in def){
-                    calls[method].push(new Animable.Animations(this.getElement(name), def[name]));
+                    this.animations[method] = new Animable.Animations(this.getElement(name), def[name]);
+                    calls[method].push(this.animations[method]);
                 }
                 this[method] = function(animObjects, method){
                     return function() {
@@ -85,6 +92,19 @@ define(["jquery", "animable/config", "animable/observer.class", "animable/anim.c
                         }
                     };
                 }(calls[method], method);
+            }
+        },
+        
+        removeAnimations: function(){
+            var anims = this.config.find('anim').getRaw();
+                
+            for(var method in anims){
+                delete this[method];
+            }
+            
+            for(var method in this.animations){
+                this.animations[method].stop();
+                delete(this.animations[method]);
             }
         },
         
@@ -117,6 +137,22 @@ define(["jquery", "animable/config", "animable/observer.class", "animable/anim.c
                 position = Animable.Convert.Position(def.position);
             }
             return $.extend({'position': 'absolute', transform: 'translate(0px,0px)'}, position, area);
+        },
+        
+        reset: function(){
+            this.destroy();
+            this.createElements();
+            this.setStyle();
+            this.setupAnimations();
+        },
+        
+        destroy: function(){
+            this.struct.remove();
+            this.removeAnimations();
+            for(var name in this.elements){
+                this.elements[name].remove();
+                delete this.elements[name];
+            }
         }
     };
 });

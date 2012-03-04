@@ -1,17 +1,23 @@
 define(["jquery", "animable/observer.class", "animable/obj.class", "animable/anim.class", "animable/config"], function($) {
         
     Animable.Scene = function(container, scene, params){
-        this.started = [container, scene, params];
         this.init(container, scene, params);
     };
     
     Animable.Scene.prototype = {
         
         init: function(container, scene, params){
+            this.animations = {};
+            this.objects = {};
+            this.config = {};
+            this.scene = {};
+            this.container = null;
+            this.params = null;
+            
             this.configure();
             this.setContainer(container);
             this.setScene(scene);
-            this.setParameters(params);
+            this.setObjects(params);
             this.setupAnimations();  
         },
         
@@ -26,7 +32,6 @@ define(["jquery", "animable/observer.class", "animable/obj.class", "animable/ani
         
         setScene: function(name){
             this.scene = this.config.find(name, true);
-            this.objects = {};
             
             if(null == this.scene.getRaw()) {
                 throw new Error('scene '+ name +' doesn\'t exist');
@@ -37,11 +42,13 @@ define(["jquery", "animable/observer.class", "animable/obj.class", "animable/ani
             this.container = container;
         },
         
-        setParameters: function(params){
+        setObjects: function(params){
+            this.params = params ?  params : this.params; 
+            
             var def = null;
-            for(var name in params){
-                if(def = this.validObject(name, params[name])){
-                    this.objects[name] =  this.initObj(params[name], def);
+            for(var name in this.params){
+                if(def = this.validObject(name, this.params[name])){
+                    this.objects[name] =  this.initObj(this.params[name], def);
                     
                 }
             }
@@ -57,6 +64,7 @@ define(["jquery", "animable/observer.class", "animable/obj.class", "animable/ani
         
         initObj: function(obj, def){
             this.container.append(obj.struct);
+            
             obj.struct.css(Animable.Convert.Position(def.position, {
                 container: { width: this.container.width(), height: this.container.height() },
                 obj:       { width: obj.getWidth(), height: obj.getHeight() }
@@ -69,6 +77,12 @@ define(["jquery", "animable/observer.class", "animable/obj.class", "animable/ani
             return obj;
         },
         
+        removeObjects: function(){
+            for(var name in this.objects){
+                this.objects[name].reset();
+            }    
+        },
+            
         register: function(obj, triggers){
             for(var name in triggers){
                 Animable.Observer.register(name, {obj: obj, method: triggers[name]});
@@ -83,14 +97,14 @@ define(["jquery", "animable/observer.class", "animable/obj.class", "animable/ani
                 
             if(anims.iteration){
                 iteration = anims.iteration;
-                delete anims.iteration;
             }
-                
+             
             for(var method in anims){
                 calls[method] = [];
                 var def = anims[method];
                 for(var name in def){
-                    calls[method].push(new Animable.Animations(this.getObject(name).struct, this.convertAnimParameters(def[name])));
+                    this.animations[method] = new Animable.Animations(this.getObject(name).struct, this.convertAnimParameters(def[name])); 
+                    calls[method].push(this.animations[method]);
                 }
                 this[method] = function(animObjects, method, iteration){
                     return function() {
@@ -103,6 +117,7 @@ define(["jquery", "animable/observer.class", "animable/obj.class", "animable/ani
                             nbAnim = animObjects.length;
                             for(var i=0 ; i < animObjects.length ; i++){ 
                                 animObjects[i].run(method, function(){
+            
                                     if(--nbAnim <= 0 && --iter > 0){
                                         iterate();
                                     }
@@ -117,6 +132,19 @@ define(["jquery", "animable/observer.class", "animable/obj.class", "animable/ani
                          
                     };
                 }(calls[method], method, iteration);
+            }
+        },
+        
+        removeAnimations: function(){
+            var anims = this.config.find('anim').getRaw();
+                
+            for(var method in anims){
+                delete this[method];
+            }
+            
+            for(var method in this.animations){
+                this.animations[method].stop();
+                delete(this.animations[method]);
             }
         },
         
@@ -148,10 +176,15 @@ define(["jquery", "animable/observer.class", "animable/obj.class", "animable/ani
             return false;
         },
         
-        destroy: function(){
-            $('div', this.container).remove();
-            this.container.data('animableScene', null);
-            Animable.Observer.triggers = {};
+        reset: function(){
+            Animable.Observer.reset();
+            
+            this.removeObjects();
+            this.removeAnimations();
+            
+            this.setObjects();
+            this.setupAnimations(); 
+            
         }
     };
     

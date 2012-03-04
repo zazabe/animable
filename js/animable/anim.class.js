@@ -8,22 +8,37 @@ define(["jquery", "util/collection.base", "animable/observer.class", "vendor/jqu
     Animable.Animations.prototype = $.extend({}, Animable.Base.Collection,
     {
         run: function(method, callback){
-            var nbAnim = this.count(), animEnd = function(){
-                if(callback && --nbAnim <= 0){
-                    callback.call();
-                }
-            }; 
-            
+            var nbAnim = this.count(), 
+                animEnd = function(){
+                    if(callback && --nbAnim >= 0){
+                        callback.call();
+                    }
+                }; 
+             
             this.forEach(function(anim){
-                anim.push(animEnd);
+                this.addInternalCallback(anim, animEnd, method);
                 this.applyAnimation(anim);
             }, this);
+        },
+        
+        addInternalCallback: function(anim, animEnd, method){
+            var callback_id = anim.length;
+            for(var i=0 ; i < anim.length ; i++){
+                if(typeof anim[i] == 'function'){
+                   callback_id = i; 
+                }
+            }
+            anim[callback_id] = animEnd;
+        },
+        
+        stop: function(){
+            this.element.stop();
+            
         }, 
 
         applyAnimation: function(anim){
             if(anim[0]['transformOrigin']){
                 this.element.css({transformOrigin: anim[0]['transformOrigin']});
-                delete anim[0]['transformOrigin'];    
             }
             this.element.animate.apply(this.element, anim);
         },

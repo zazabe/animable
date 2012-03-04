@@ -12,13 +12,7 @@ define(["jquery", "animable/obj.class", "animable/scene.class", "animable/anim.c
         });
         
         $('#reset').click(function(){
-            $('#container').scene().destroy();
-            
-            camper = new Animable.Obj('vehicule', 'camper');
-            tower = new Animable.Obj('building', 'tower');
-        
-            $('#container').scene('goTo', {subject: camper, target: tower });
-        
+            $('#container').scene().reset();
         });
         
         
