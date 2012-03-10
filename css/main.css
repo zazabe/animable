@@ -1,0 +1,14 @@
+body {
+    background: #f6f6f6;
+}
+
+#container {
+    background: #fff;
+    border: 1px solid #999;
+    width: 1600px;
+    height: 800px;
+    overflow: hidden;
+    position: relative;
+}
+
+#container.wireframe div { opacity:0.5; border: 1px solid #999; }

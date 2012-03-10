@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>test</title>
+        <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="format-detection" content="telephone=no" />     
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <link href="css/object.css"type="text/css" rel="stylesheet">
+        <link href="css/main.css"type="text/css" rel="stylesheet">
+    </head>
+<body>
+
+
+    <div id="scene" class="-wireframe">
+        <div class="vehicule vw_camper">
+            <div id="body" class="body"></div>
+            <div id="backWheel" class="wheel back"></div>
+            <div id="frontWheel" class="wheel front"></div>
+            <div id="bodyBack" class="body back"></div>
+        </div>
+        
+        <a href="#" id="switch">change car</a>
+    </div>
+
+    <script type="text/javascript" src="js/vendor/jquery.js"></script>
+    <script type="text/javascript" src="js/vendor/jquery.transform2d.origin.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function(){
+            
+    
+            $('.wheel').css({transform: 'rotate(0deg)'});
+            $('.vehicule').css({transform: 'translate(0px,400px)'});
+            $('.body').css({transform: 'translate(0px,0px)'});
+            
+            
+            var iter = 0;
+            var animWheel = function(obj){
+                console.log('> wheel anim');
+                    
+                obj.animate({transform: '+=rotate(360deg)'}, 500, 'linear', function(){
+                    if(iter < 8){
+                        animWheel($(this));
+                    }
+                });
+            };
+            
+            var animBody = function(obj){
+                console.log('> body anim');
+                obj.animate({transform: 'translate('+((iter+1)%2==1? 2 : 0 )+'px,'+((iter+1)%2==0? 2 : 0 )+'px)'}, 250, function(){
+                    if(iter <= 10){
+                        animBody($(this));
+                    }
+                });
+            };
+            
+            
+            var animVehicule = function(obj){
+                console.log('> vehicule anim');
+                obj.animate({transform: '+=translate(100px,0px)'}, 250, 'linear', function(){
+                    if(iter++ < 10){
+                        animVehicule($(this));
+                    }
+                });
+            };
+            
+            $('.vehicule').click(function(){
+                animVehicule($('.vehicule'));
+                animBody($('.body'));
+                
+                animWheel($('.wheel'));
+            }); 
+        
+            $('#switch').click(function(){
+                var vehicule = $('.vehicule');
+                vehicule.attr('class', 'vehicule ' + (vehicule.hasClass('vw_camper') ? 'sport' : 'vw_camper'));
+                return false;
+            });
+        
+    });
+    
+        
+    </script>
+    </body>
+</html>

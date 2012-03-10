@@ -1,0 +1,36 @@
+/* vehicules */
+.vehicule, .vehicule div { overflow: hidden; position: absolute; background-repeat: no-repeat;}
+.vehicule { width: 597px; height: 260px; }
+
+.body        {  width: 592px; height: 232px; z-index: 2; }
+.wheel       {  width: 93px; height: 93px; z-index: 1; }
+.wheel.front {  top: 165px; left: 406px;  }
+.wheel.back  {  top: 165px; left: 75px; }
+.body.back   {   top: 154px; left: 28px; }
+.body.back   {  width: 592px; height: 72px; z-index: 0; }
+
+.body   { background-position: 0px -818px; }
+.wheel  { background-position: -596px -958px; }
+.body.back   { background-position: 0px -746px; }
+
+.vw_camper div { background-image: url(../data/vehicules/vw_camper.svg); }
+.sport div     { background-image: url(../data/vehicules/sport.svg); }
+
+
+
+.rotate 
+{
+    -webkit-animation-name:             rotate; 
+    -webkit-animation-duration:         0.5s; 
+    -webkit-animation-iteration-count:  5;
+    -webkit-animation-timing-function: linear;
+}
+
+@-webkit-keyframes rotate {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to { 
+    -webkit-transform: rotate(360deg);
+  }
+}
